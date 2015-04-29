@@ -9,6 +9,9 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn import cross_validation
 from sklearn.linear_model import LogisticRegression
 import matplotlib.pyplot as plt
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.svm import SVC
 
 os.chdir("/Users/Lucy/MSDS/2015Spring/DSGA1003_Machine_Learning/project/codes")
 
@@ -136,33 +139,42 @@ def main():
     # there are 835 assessors, each evaluated approximately 66 recordings
     
     DF_x,DF_y = splitXY(filepath)
-    
     DF_x = DF_x.fillna(-1)    
-    
     DF_y.isnull().sum() #only 5 missing values
-    
     DF_y = TransformTarget(DF_y)  
-    
-    
     DF_train_x,DF_test_x,DF_train_y,DF_test_y = SplitTrainTest(DF_x,DF_y,train_percent = 0.75)
     
+    nEstimators = [10,100,200,500,1000]  
+    C = [10**x for x in range(-5,5)]
+    
+    GBC_func = []
+    for i in nEstimators:
+        GBC_func.append(wrapper(GradientBoostingClassifier,n_estimators=i,learning_rate = 0.1))
+    GBC_Score = CrossVal(DF_train_x,DF_train_y,GBC_func,k=3)
+    
+    #GBR_func = []
+    #for i in nEstimators:
+     #   GBR_func.append(wrapper(GradientBoostingRegressor,loss='huber',n_estimators=i,learning_rate = 0.1))
+    #GBR_Score = CrossVal(DF_train_x,DF_train_y,GBR_func,k=3) 
+    
     RF_func = []    
-    nEstimators = [10,100,200,500,1000]
     for i in nEstimators:
         RF_func.append(wrapper(RandomForestClassifier,n_estimators=i))
-    
-    RF_Score = CrossVal(DF_train_x,DF_train_y,RF_func,k=2)
+    RF_Score = CrossVal(DF_train_x,DF_train_y,RF_func,k=3)
     
     Logit_func = []
-    C = [10**x for x in range(-5,5)]
     for i in C:
         Logit_func.append(wrapper(LogisticRegression,C=i))
+    Logit_Score = CrossVal(DF_train_x,DF_train_y,Logit_func,k=3)
     
-    Logit_Score = CrossVal(DF_train_x,DF_train_y,Logit_func,k=2)
-    
-    Logit_score_avg = np.mean(Logit_Score, axis=1)
+    SVM_func = []
+    for i in C:
+        SVM_func.append(wrapper(SVC, C=i, kernel='poly', degree = 2))
+    SVM_Score = CrossVal(DF_train_x,DF_train_y,SVM_func,k=3) 
     
     target_cols = list(DF_test_y.columns)
+       
+    Logit_score_avg = np.mean(Logit_Score, axis=1)
     position = 231    
     fig = plt.figure()
     for i in range(len(target_cols)):
@@ -172,7 +184,7 @@ def main():
         ax.set_autoscaley_on(True)
         position += 1
     plt.tight_layout()
-    fig.savefig("figures/logit_plots.png")
+    fig.savefig("figures/logit_plots_.4.28.15.png")
     
     RF_score_avg = np.mean(RF_Score, axis=1)
     position = 231    
@@ -184,8 +196,43 @@ def main():
         ax.set_autoscaley_on(True)
         position += 1
     plt.tight_layout()
-    fig.savefig("figures/rf_plots.png")
-        
+    fig.savefig("figures/rf_plots_4.28.15.png")
+    
+    GBC_score_avg = np.mean(GBC_Score, axis=1)
+    position = 231    
+    fig = plt.figure()
+    for i in range(len(target_cols)):
+        ax = fig.add_subplot(position)
+        ax.plot(np.log(nEstimators),GBC_score_avg[i])
+        ax.set_title(target_cols[i])
+        ax.set_autoscaley_on(True)
+        position += 1
+    plt.tight_layout()
+    fig.savefig("figures/GBC_plots_4.28.15.png")
+    
+    GBR_score_avg = np.mean(GBR_Score, axis=1)
+    position = 231    
+    fig = plt.figure()
+    for i in range(len(target_cols)):
+        ax = fig.add_subplot(position)
+        ax.plot(np.log(nEstimators),GBR_score_avg[i])
+        ax.set_title(target_cols[i])
+        ax.set_autoscaley_on(True)
+        position += 1
+    plt.tight_layout()
+    fig.savefig("figures/GBR_plots_4.28.15.png")
+    
+    SVM_score_avg = np.mean(SVM_Score, axis=1)
+    position = 231    
+    fig = plt.figure()
+    for i in range(len(target_cols)):
+        ax = fig.add_subplot(position)
+        ax.plot(np.log(nEstimators),SVM_score_avg[i])
+        ax.set_title(target_cols[i])
+        ax.set_autoscaley_on(True)
+        position += 1
+    plt.tight_layout()
+    fig.savefig("figures/SVM_plots_4.28.15.png")
     
     
     
