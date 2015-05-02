@@ -10,14 +10,26 @@ from sklearn import cross_validation
 from sklearn.linear_model import LogisticRegression
 import matplotlib.pyplot as plt
 from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.svm import SVC
 
+#set working directory
 os.chdir("/Users/Lucy/MSDS/2015Spring/DSGA1003_Machine_Learning/project/codes")
 
 
-#split dataset into X and Y
+#split dataset into the feature and target dataframes
 def splitXY(filepath):
+    '''
+    splitXY splits the master dataframe into a feature dataframe and a label dataframe. Each dataframe will 
+    have a workerID
+    
+    Args:
+    filepath: the path to master dataset
+    
+    Returns:
+    DF_x: dataframe containing all feature columns
+    DF_y: dataframe containing all target columns
+    '''
+    
     Target_Col = ['Aggressive','Attractive','Confident','Intelligent','Masculine','Quality','Trust','Win']    
     
     DF = pd.read_csv(filepath,index_col=0)    
@@ -30,7 +42,23 @@ def splitXY(filepath):
     
 #transform target data
 
-def TransformTarget(DF_y):    
+def TransformTarget(DF_y): 
+    '''
+    Transforms the target variables into binary labels.
+    
+    Every variable is z-score'd by WorkerID. This means the average of each quality for each Worker
+    is rescaled to 0. Missing raw data are filled with mean of entire category. Null's from
+    normalization are filled with 0.
+    
+    y > 0 -> 1
+    y <= 0 -> 0
+        
+    Args:
+    DF_y: dataframe of raw target variables
+    
+    Returns:
+    DF_y: transformed target variables with binary value
+    '''
     DF_y = DF_y.fillna(DF_y.mean())
     
     cols = list(DF_y.columns)
@@ -55,6 +83,21 @@ def TransformTarget(DF_y):
     return DF_y    
 
 def SplitTrainTest(DF_x,DF_y,train_percent = 0.75):
+    '''
+    Splits the X and Y dataframes into training and test sets. The split is done by random sampling
+    of WorkerId. 
+    
+    Args:
+    DF_x: feature dataframe
+    DF_y: transformed target variable dataframe
+    train_percent: the amount of data to split for training
+    
+    Returns:
+    DF_train_x:  feature dataframe for training 
+    DF_test_x: feature dataframe for testing
+    DF_train_y: target dataframe for training
+    DF_test_y: target dataframe for testing
+    '''
     DF_Index = pd.read_csv("Data/WorkerId.csv")
     Num_Rows = np.shape(DF_Index)[0] 
     train_index = int(Num_Rows * train_percent)
@@ -68,19 +111,40 @@ def SplitTrainTest(DF_x,DF_y,train_percent = 0.75):
     DF_x = pd.merge(DF_x, DF_Index, on='WorkerId')
     DF_y = pd.merge(DF_y, DF_Index, on='WorkerId')
     
-    drop_col = ['WorkerId','Index']
-    
     DF_train_x = DF_x.loc[DF_x.Index <= train_index]
-    DF_test_x = DF_x.loc[DF_x.Index > train_index].drop(drop_col,axis=1)
+    DF_test_x = DF_x.loc[DF_x.Index > train_index]
     DF_train_y = DF_y.loc[DF_y.Index <= train_index]
-    DF_test_y = DF_y.loc[DF_y.Index > train_index].drop(drop_col,axis=1)
+    DF_test_y = DF_y.loc[DF_y.Index > train_index]
     
     return DF_train_x,DF_test_x,DF_train_y,DF_test_y
     
 def wrapper(func,*args, **kwargs):
+    '''
+    wrapper function for running models
+    
+    Args:
+    func: the classification algorithm
+    *args: args associated with the function
+    **kwargs: keyword args associated with the function
+    
+    Returns:
+    the classifier with specified parameters
+    '''
     return func(*args,**kwargs)
 
 def CrossVal(DF_train_x,DF_train_y,func,k=10):
+    '''
+    Parameter tuning with cross validation
+    
+    Args:
+    DF_train_x: feature dataframe for training
+    DF_train_y: transformed target dataframe for testing
+    func: a list of classifier instances
+    k: number of folds
+    
+    Returns:
+    score: 3 dimensional list of scores for every target variable, every hyperparameter, and every fold
+    '''
     DF_WorkerId=pd.Series(DF_train_x.WorkerId.values.ravel()).unique()     
     Num_Rows = DF_WorkerId.shape[0] 
     Num_Cols = DF_train_y.shape[1]-2
@@ -92,6 +156,7 @@ def CrossVal(DF_train_x,DF_train_y,func,k=10):
     x_cols = list(DF_train_x.columns)
     y_cols = list(DF_train_y.columns)  
     
+    feature_cols = x_cols[3:-1]
     target_cols = y_cols[1:-1]
     
     k_fold=0
@@ -99,10 +164,10 @@ def CrossVal(DF_train_x,DF_train_y,func,k=10):
         DF_WorkerId_train = DF_WorkerId[train_index]
         DF_WorkerId_test = DF_WorkerId[test_index]       
         
-        DF_xtrain_x = DF_train_x[DF_train_x.WorkerId.isin(DF_WorkerId_train)][x_cols[3:-1]]
-        DF_xtrain_y = DF_train_y[DF_train_y.WorkerId.isin(DF_WorkerId_train)][y_cols[1:-1]]     
-        DF_xtest_x = DF_train_x[DF_train_x.WorkerId.isin(DF_WorkerId_test)][x_cols[3:-1]]    
-        DF_xtest_y = DF_train_y[DF_train_y.WorkerId.isin(DF_WorkerId_test)][y_cols[1:-1]]
+        DF_xtrain_x = DF_train_x[DF_train_x.WorkerId.isin(DF_WorkerId_train)][feature_cols]
+        DF_xtrain_y = DF_train_y[DF_train_y.WorkerId.isin(DF_WorkerId_train)][target_cols]     
+        DF_xtest_x = DF_train_x[DF_train_x.WorkerId.isin(DF_WorkerId_test)][feature_cols]    
+        DF_xtest_y = DF_train_y[DF_train_y.WorkerId.isin(DF_WorkerId_test)][target_cols]
         
         for i in range(len(target_cols)):
             for f in range(len(func)):
@@ -113,24 +178,79 @@ def CrossVal(DF_train_x,DF_train_y,func,k=10):
     
     return score
     
-def testScore(clf,DF_train_x,DF_train_y,DF_test_x,DF_test_y):
-    Num_Cols = DF_test_y.shape[1]    
-    score = np.zeros(Num_Cols)
+def TrainTestClean(DF_train_x,DF_train_y,DF_test_x,DF_test_y):
+    '''
+    Take out all columns that are not part of the model, including index and identifier columns
+    
+    Args:
+    DF_train_x: feature dataframe for training
+    DF_train_y: target dataframe for training
+    DF_test_x: feature dataframe for testing
+    DF_test_y: taret dataframe for testing
+    
+    Returns:
+    DF_train_x: training feature dataframe ready to put in model
+    DF_train_y: training target dataframe ready to put in model
+    DF_test_x: test feature dataframe ready to put in model
+    DF_test_y: test target dataframe ready to put in model
+    '''
     
     x_cols = list(DF_train_x.columns)
-    y_cols = list(DF_train_y.columns)  
+    y_cols = list(DF_train_y.columns) 
     
-    DF_train_x = DF_train_x[x_cols[3:-1]]
-    DF_train_y = DF_train_y[y_cols[1:-1]]     
-    DF_test_x = DF_train_x[x_cols[3:-1]]    
-    DF_test_y = DF_train_y[y_cols[1:-1]]    
+    feature_cols = x_cols[3:-1]
+    target_cols = y_cols[1:-1]
+    
+    DF_train_x = DF_train_x[feature_cols]
+    DF_train_y = DF_train_y[target_cols]     
+    DF_test_x = DF_test_x[feature_cols]    
+    DF_test_y = DF_test_y[target_cols]  
+
+    return DF_train_x, DF_train_y,DF_test_x,DF_test_y
+    
+def testScore(Models,DF_test_x,DF_test_y):
+    '''
+    Calculates the test score for each target variable using a list of models
+    
+    Args:
+    Models: a list of fitted classifiers to test, same length as the number of target variables
+    DF_test_x: test feature dataframe
+    DF_test_y: test target dataframe
+    
+    Returns:
+    score: an numpy array of the scores for each target variable
+    '''
+    Num_Cols = DF_test_y.shape[1]    
+    score = np.zeros(Num_Cols)  
+    
+    for i in range(Num_Cols):
+        score[i]=Models[i].score(DF_test_x,DF_test_y[[i]].squeeze())
+        
+    return score
+    
+def fitModels(clf, DF_train_x,DF_train_y):
+    '''
+    fits models to each target variable and returns a list of the fitted models
+    
+    Args:
+    clf: the classifier instance to use
+    DF_train_x: training feature dataframe
+    DF_train_y: training target dataframe
+    
+    Returns:
+    fit_models: a list of the fitted models for each target variable
+    '''
+    
+    Num_Cols = DF_train_y.shape[1]
+    fit_models = []
+
     
     for i in range(Num_Cols):
         clf.fit(DF_train_x,DF_train_y[[i]].squeeze())
-        score[i]=clf.score(DF_test_x,DF_test_y[[i]].squeeze())
-        
-    return score
-
+        fit_models.append(clf)
+    
+    return fit_models
+    
 #svm
 
 
@@ -151,11 +271,6 @@ def main():
     for i in nEstimators:
         GBC_func.append(wrapper(GradientBoostingClassifier,n_estimators=i,learning_rate = 0.1))
     GBC_Score = CrossVal(DF_train_x,DF_train_y,GBC_func,k=3)
-    
-    #GBR_func = []
-    #for i in nEstimators:
-     #   GBR_func.append(wrapper(GradientBoostingRegressor,loss='huber',n_estimators=i,learning_rate = 0.1))
-    #GBR_Score = CrossVal(DF_train_x,DF_train_y,GBR_func,k=3) 
     
     RF_func = []    
     for i in nEstimators:
@@ -210,18 +325,6 @@ def main():
     plt.tight_layout()
     fig.savefig("figures/GBC_plots_4.28.15.png")
     
-    GBR_score_avg = np.mean(GBR_Score, axis=1)
-    position = 231    
-    fig = plt.figure()
-    for i in range(len(target_cols)):
-        ax = fig.add_subplot(position)
-        ax.plot(np.log(nEstimators),GBR_score_avg[i])
-        ax.set_title(target_cols[i])
-        ax.set_autoscaley_on(True)
-        position += 1
-    plt.tight_layout()
-    fig.savefig("figures/GBR_plots_4.28.15.png")
-    
     SVM_score_avg = np.mean(SVM_Score, axis=1)
     position = 231    
     fig = plt.figure()
@@ -233,6 +336,54 @@ def main():
         position += 1
     plt.tight_layout()
     fig.savefig("figures/SVM_plots_4.28.15.png")
+    
+    
+    #getting feature importance
+    train_x, train_y,test_x, test_y = TrainTestSplit(DF_train_x,DF_train_y,DF_test_x,DF_test_y)
+    columns = list(train_x.columns)
+    GBC_clf = GradientBoostingClassifier(n_estimators=500,learning_rate = 0.1)  
+    GBC_clf.fit(train_x,train_y[[0]].squeeze())
+    GBC_feature_importance= pd.DataFrame()
+    GBC_feature_importance['features']=list(train_x.columns)
+    GBC_feature_importance['importance'] = GBC_clf.feature_importances_
+    GBC_feature_importance['importance'] = GBC_feature_importance['importance'] / max(GBC_feature_importance['importance'])
+    GBC_feature_importance = GBC_feature_importance.sort('importance',ascending=False)
+    
+    RF_clf = RandomForestClassifier(n_estimators=500)
+    RF_clf.fit(train_x,train_y[[0]].squeeze())
+    RF_feature_importance = pd.DataFrame()
+    RF_feature_importance['features'] = list(train_x.columns)
+    RF_feature_importance['importance'] = RF_clf.feature_importances_
+    RF_feature_importance['importance'] = RF_feature_importance['importance'] / max(RF_feature_importance['importance'])
+    RF_feature_importance = RF_feature_importance.sort('importance',ascending=False)    
+    
+    feature_importance = pd.dataFrame()
+    feature_importance['features'] = list(train_x.columns)[2:156]
+    target_labels = list(train_y.columns)    
+    
+    RF_models = fitModels(RF_clf,train_x[columns[2:156]],train_y)
+    for i in range(len(RF_models)):
+        feature_importance[target_labels[i]] = RF_models[i].feature_importances_
+        feature_importance[target_labels[i]] = feature_importance[target_labels[i]]/max(feature_importance[target_labels[i]])
+    
+    RF_testScores = testScore(RF_models,test_x[columns[2:156]],test_y)
+    
+    #testing without the time features
+    unwanted_features = ['AssignmentDurationInSeconds', 'WorkTimeInSeconds']
+    DF_train_x_2 = DF_train_x.drop(unwanted_features,axis=1)
+    
+    RF_func = []    
+    for i in nEstimators:
+        RF_func.append(wrapper(RandomForestClassifier,n_estimators=i))
+    RF_Score_2 = CrossVal(DF_train_x_2,DF_train_y,RF_func,k=2)
+    
+    Logit_func = []
+    for i in C:
+        Logit_func.append(wrapper(LogisticRegression,C=i))
+    Logit_Score_2 = CrossVal(DF_train_x_2,DF_train_y,Logit_func,k=2)
+    
+        
+        
     
     
     
