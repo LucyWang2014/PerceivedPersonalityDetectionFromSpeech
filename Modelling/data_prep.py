@@ -258,15 +258,18 @@ def main():
     filepath = "Data/Master_27_4.csv"
     # there are 835 assessors, each evaluated approximately 66 recordings
     
+    #preparing the data
     DF_x,DF_y = splitXY(filepath)
     DF_x = DF_x.fillna(-1)    
     DF_y.isnull().sum() #only 5 missing values
     DF_y = TransformTarget(DF_y)  
     DF_train_x,DF_test_x,DF_train_y,DF_test_y = SplitTrainTest(DF_x,DF_y,train_percent = 0.75)
     
+    #setting the hyperparameters to test
     nEstimators = [10,100,200,500,1000]  
     C = [10**x for x in range(-5,5)]
     
+    #cross validation for different classifiers
     GBC_func = []
     for i in nEstimators:
         GBC_func.append(wrapper(GradientBoostingClassifier,n_estimators=i,learning_rate = 0.1))
@@ -288,7 +291,8 @@ def main():
     SVM_Score = CrossVal(DF_train_x,DF_train_y,SVM_func,k=3) 
     
     target_cols = list(DF_test_y.columns)
-       
+    
+    #plots for the cross validation results
     Logit_score_avg = np.mean(Logit_Score, axis=1)
     position = 231    
     fig = plt.figure()
@@ -341,6 +345,7 @@ def main():
     #getting feature importance
     train_x, train_y,test_x, test_y = TrainTestSplit(DF_train_x,DF_train_y,DF_test_x,DF_test_y)
     columns = list(train_x.columns)
+    
     GBC_clf = GradientBoostingClassifier(n_estimators=500,learning_rate = 0.1)  
     GBC_clf.fit(train_x,train_y[[0]].squeeze())
     GBC_feature_importance= pd.DataFrame()
