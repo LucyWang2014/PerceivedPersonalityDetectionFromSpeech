@@ -195,8 +195,8 @@ def TrainTestClean(DF_train_x,DF_train_y,DF_test_x,DF_test_y):
     DF_test_y: test target dataframe ready to put in model
     '''
     
-    x_cols = list(DF_train_x.columns)
-    y_cols = list(DF_train_y.columns) 
+    x_cols = DF_train_x.columns.values.tolist()
+    y_cols = DF_train_y.columns.values.tolist()
     
     feature_cols = x_cols[3:-1]
     target_cols = y_cols[1:-1]
@@ -343,8 +343,8 @@ def main():
     
     
     #getting feature importance
-    train_x, train_y,test_x, test_y = TrainTestSplit(DF_train_x,DF_train_y,DF_test_x,DF_test_y)
-    columns = list(train_x.columns)
+    train_x, train_y,test_x, test_y = TrainTestClean(DF_train_x,DF_train_y,DF_test_x,DF_test_y)
+    columns = train_x.columns.values.tolist()
     
     GBC_clf = GradientBoostingClassifier(n_estimators=500,learning_rate = 0.1)  
     GBC_clf.fit(train_x,train_y[[0]].squeeze())
@@ -364,14 +364,31 @@ def main():
     
     feature_importance = pd.dataFrame()
     feature_importance['features'] = list(train_x.columns)[2:156]
-    target_labels = list(train_y.columns)    
+    target_labels = train_y.columns.values.tolist()  
     
-    RF_models = fitModels(RF_clf,train_x[columns[2:156]],train_y)
-    for i in range(len(RF_models)):
-        feature_importance[target_labels[i]] = RF_models[i].feature_importances_
-        feature_importance[target_labels[i]] = feature_importance[target_labels[i]]/max(feature_importance[target_labels[i]])
+    #RF_models = fitModels(RF_clf,train_x[columns[2:156]],train_y)
+    #for i in range(len(RF_models)):
+     #   feature_importance[target_labels[i]] = RF_models[i].feature_importances_
+      #  feature_importance[target_labels[i]] = feature_importance[target_labels[i]]/max(feature_importance[target_labels[i]])
     
-    RF_testScores = testScore(RF_models,test_x[columns[2:156]],test_y)
+    #RF_testScores = testScore(RF_models,test_x[columns[2:156]],test_y)
+    
+    #feature importance for logistic regression
+    scores = np.zeros((len(columns),len(target_labels)))
+    Logit_clf = LogisticRegression(C = 0.01)
+    for i in range(len(target_labels)):  
+        for j in range(len(columns)):
+            cols = [col for col in train_x.columns if col not in [columns[j]]]
+            Logit_clf.fit(train_x[cols],train_y[target_labels[i]].squeeze())
+            temp_score = Logit_clf.score(test_x[cols],test_y[target_labels[i]].squeeze())
+            print "target variable " + target_labels[i] + " without " + columns[j] + ": " + str(temp_score)
+            scores[j][i] = temp_score
+    
+    #scores for logit with all features
+    actual_scores = np.zeros(len(target_labels))
+    for i in range(len(target_labels)):
+        Logit_clf.fit(train_x,train_y[target_labels[i]].squeeze())
+        actual_scores[i]=Logit_clf.score(test_x,test_y[target_labels[i]].squeeze())
     
     #testing without the time features
     unwanted_features = ['AssignmentDurationInSeconds', 'WorkTimeInSeconds']
@@ -386,6 +403,8 @@ def main():
     for i in C:
         Logit_func.append(wrapper(LogisticRegression,C=i))
     Logit_Score_2 = CrossVal(DF_train_x_2,DF_train_y,Logit_func,k=2)
+    
+    
     
         
         
