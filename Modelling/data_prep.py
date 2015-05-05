@@ -153,8 +153,8 @@ def CrossVal(DF_train_x,DF_train_y,func,k=10):
     
     score = np.zeros((Num_Cols,k,len(func)))
     
-    x_cols = list(DF_train_x.columns)
-    y_cols = list(DF_train_y.columns)  
+    x_cols = DF_train_x.columns.values.tolist()
+    y_cols = DF_train_y.columns.values.tolist() 
     
     feature_cols = x_cols[3:-1]
     target_cols = y_cols[1:-1]
@@ -250,6 +250,7 @@ def fitModels(clf, DF_train_x,DF_train_y):
         fit_models.append(clf)
     
     return fit_models
+
     
 #svm
 
@@ -403,10 +404,31 @@ def main():
     for i in C:
         Logit_func.append(wrapper(LogisticRegression,C=i))
     Logit_Score_2 = CrossVal(DF_train_x_2,DF_train_y,Logit_func,k=2)
+
+    #running the algorithms with only audio data, without audio data, with everything
+    Audio_Features = columns[65:]
+    GBC_audio_scores_avg = np.zeros((3,len(target_labels)))
+    GBC = []
+    GBC.append(GradientBoostingClassifier(n_estimators=500,learning_rate = 0.1))
+    GBC_Scores_all = CrossVal(DF_train_x,DF_train_y,GBC,k=3)
+    DF_train_x_audio = pd.concat([DF_train_x.ix[:,['WorkerId']],DF_train_x[Audio_Features]],axis=1,join_axes=[DF_train_x.index])
+    GBC_Scores_audio = CrossVal(DF_train_x_audio,DF_train_y,GBC,k=3)
+    GBC_Scores_noaudio = CrossVal(DF_train_x.drop(Audio_Features,axis=1),DF_train_y,GBC,k=3)
+    GBC_audio_scores_avg[0] = np.mean(GBC_Scores_all, axis=1).ravel()
+    GBC_audio_scores_avg[1] = np.mean(GBC_Scores_audio, axis=1).ravel()
+    GBC_audio_scores_avg[2] = np.mean(GBC_Scores_noaudio, axis=1).ravel()
+    GBC_labels = ["all","only_audio","no_audio"]
+      
+    fig = plt.figure()
+    for i in range(GBC_audio_scores_avg.shape[0]):
+        ax = fig.add_subplot(111)
+        ax.plot(range(len(target_labels)),GBC_audio_scores_avg[i],label = GBC_labels[i])
+        plt.xticks(range(len(target_labels)), target_labels, size="small")
+        ax.set_autoscaley_on(True)
+    plt.tight_layout()
+    plt.legend(loc=4)
+    fig.savefig("figures/GBC_audio_scores_5.5.15.png")
     
-    
-    
-        
         
     
     
