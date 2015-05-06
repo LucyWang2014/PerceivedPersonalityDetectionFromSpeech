@@ -256,7 +256,7 @@ def fitModels(clf, DF_train_x,DF_train_y):
 
 
 def main():
-    filepath = "Data/Master_27_4.csv"
+    filepath = "Data/Master_30_4.csv"
     # there are 835 assessors, each evaluated approximately 66 recordings
     
     #preparing the data
@@ -304,7 +304,7 @@ def main():
         ax.set_autoscaley_on(True)
         position += 1
     plt.tight_layout()
-    fig.savefig("figures/logit_plots_.4.28.15.png")
+    fig.savefig("figures/logit_plots_5.5.15.png")
     
     RF_score_avg = np.mean(RF_Score, axis=1)
     position = 231    
@@ -316,7 +316,7 @@ def main():
         ax.set_autoscaley_on(True)
         position += 1
     plt.tight_layout()
-    fig.savefig("figures/rf_plots_4.28.15.png")
+    fig.savefig("figures/rf_plots_5.5.15.png")
     
     GBC_score_avg = np.mean(GBC_Score, axis=1)
     position = 231    
@@ -328,7 +328,7 @@ def main():
         ax.set_autoscaley_on(True)
         position += 1
     plt.tight_layout()
-    fig.savefig("figures/GBC_plots_4.28.15.png")
+    fig.savefig("figures/GBC_plots_5.5.15.png")
     
     SVM_score_avg = np.mean(SVM_Score, axis=1)
     position = 231    
@@ -340,7 +340,7 @@ def main():
         ax.set_autoscaley_on(True)
         position += 1
     plt.tight_layout()
-    fig.savefig("figures/SVM_plots_4.28.15.png")
+    fig.savefig("figures/SVM_plots_5.5.15.png")
     
     
     #getting feature importance
@@ -429,6 +429,25 @@ def main():
     plt.legend(loc=4)
     fig.savefig("figures/GBC_audio_scores_5.5.15.png")
     
+    GBC_fits = []
+    GBC_feature_importance= pd.DataFrame()
+    GBC_feature_importance['features']=train_x.columns.values.tolist()
+    for i in range(len(target_labels)):    
+        GBC_clf.fit(train_x,train_y[[i]].squeeze())
+        GBC_fits.append(GBC_clf)
+        col_name = target_labels[i] + " importance"
+        GBC_feature_importance[col_name] = GBC_clf.feature_importances_
+        GBC_feature_importance[col_name] = GBC_feature_importance[col_name] / max(GBC_feature_importance[col_name])
+        print col_name + " completed"
+        
+    for i in range(len(target_labels)):
+        col_name = target_labels[i] + " importance"
+        GBC_feature_importance = GBC_feature_importance.sort(col_name,ascending=False)
+        print "top features for " + col_name
+        print GBC_feature_importance[[0,i+1]].head(20)
+        print "bottom features for " + col_name
+        print GBC_feature_importance[[0,i+1]].tail(20)
+        
         
     
     
