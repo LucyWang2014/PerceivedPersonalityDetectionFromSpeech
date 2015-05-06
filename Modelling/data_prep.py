@@ -448,6 +448,8 @@ def main():
         print "bottom features for " + col_name
         print GBC_feature_importance[[0,i+1]].tail(20)
         
+    GBC_feature_importance.to_csv("figures/GBC_feature_importance.csv")
+        
         
     
     
