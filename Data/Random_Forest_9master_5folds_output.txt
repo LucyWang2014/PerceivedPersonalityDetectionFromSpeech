@@ -1,0 +1,187 @@
+Random Forest, data loaded
+c = 0 and target variable Aggressive_label: 0.575360737238
+c = 1 and target variable Aggressive_label: 0.586273796532
+c = 2 and target variable Aggressive_label: 0.58675882139
+c = 3 and target variable Aggressive_label: 0.587486358676
+c = 4 and target variable Aggressive_label: 0.587122590033
+c = 0 and target variable Attractive_label: 0.571359282163
+c = 1 and target variable Attractive_label: 0.584091184673
+c = 2 and target variable Attractive_label: 0.590153995392
+c = 3 and target variable Attractive_label: 0.585788771675
+c = 4 and target variable Attractive_label: 0.589790226749
+c = 0 and target variable Confident_label: 0.580453498242
+c = 1 and target variable Confident_label: 0.601673335758
+c = 2 and target variable Confident_label: 0.601915848187
+c = 3 and target variable Confident_label: 0.601067054687
+c = 4 and target variable Confident_label: 0.600824542258
+c = 0 and target variable Intelligent_label: 0.547956832788
+c = 1 and target variable Intelligent_label: 0.562022553656
+c = 2 and target variable Intelligent_label: 0.566509033588
+c = 3 and target variable Intelligent_label: 0.563598884443
+c = 4 and target variable Intelligent_label: 0.567600339517
+c = 0 and target variable Masculine_label: 0.723172062568
+c = 1 and target variable Masculine_label: 0.741966775797
+c = 2 and target variable Masculine_label: 0.740632957439
+c = 3 and target variable Masculine_label: 0.742209288226
+c = 4 and target variable Masculine_label: 0.744634412514
+c = 0 and target variable Trust_label: 0.5455317085
+c = 1 and target variable Trust_label: 0.546744270644
+c = 2 and target variable Trust_label: 0.55244331272
+c = 3 and target variable Trust_label: 0.552200800291
+c = 4 and target variable Trust_label: 0.55135200679
+c = 0 and target variable Aggressive_label: 0.562492423324
+c = 1 and target variable Aggressive_label: 0.573160383077
+c = 2 and target variable Aggressive_label: 0.573645290338
+c = 3 and target variable Aggressive_label: 0.576433507092
+c = 4 and target variable Aggressive_label: 0.57752454843
+c = 0 and target variable Attractive_label: 0.568190083647
+c = 1 and target variable Attractive_label: 0.583343435568
+c = 2 and target variable Attractive_label: 0.584798157352
+c = 3 and target variable Attractive_label: 0.586252879137
+c = 4 and target variable Attractive_label: 0.585161837799
+c = 0 and target variable Confident_label: 0.59873924112
+c = 1 and target variable Confident_label: 0.608073705904
+c = 2 and target variable Confident_label: 0.610861922657
+c = 3 and target variable Confident_label: 0.610498242211
+c = 4 and target variable Confident_label: 0.612801551703
+c = 0 and target variable Intelligent_label: 0.539580555219
+c = 1 and target variable Intelligent_label: 0.554855133956
+c = 2 and target variable Intelligent_label: 0.556067402109
+c = 3 and target variable Intelligent_label: 0.558128257971
+c = 4 and target variable Intelligent_label: 0.556188628925
+c = 0 and target variable Masculine_label: 0.707358467693
+c = 1 and target variable Masculine_label: 0.731361377137
+c = 2 and target variable Masculine_label: 0.728815614014
+c = 3 and target variable Masculine_label: 0.732452418475
+c = 4 and target variable Masculine_label: 0.73414959389
+c = 0 and target variable Trust_label: 0.533276760819
+c = 1 and target variable Trust_label: 0.532670626743
+c = 2 and target variable Trust_label: 0.532791853558
+c = 3 and target variable Trust_label: 0.530973451327
+c = 4 and target variable Trust_label: 0.530609770881
+c = 0 and target variable Aggressive_label: 0.569072920484
+c = 1 and target variable Aggressive_label: 0.576157322585
+c = 2 and target variable Aggressive_label: 0.573592280445
+c = 3 and target variable Aggressive_label: 0.578478074997
+c = 4 and target variable Aggressive_label: 0.577012336631
+c = 0 and target variable Attractive_label: 0.563087822157
+c = 1 and target variable Attractive_label: 0.575668743129
+c = 2 and target variable Attractive_label: 0.57664590204
+c = 3 and target variable Attractive_label: 0.57505801881
+c = 4 and target variable Attractive_label: 0.576523757176
+c = 0 and target variable Confident_label: 0.583730304141
+c = 1 and target variable Confident_label: 0.596555514841
+c = 2 and target variable Confident_label: 0.593624038109
+c = 3 and target variable Confident_label: 0.594723341883
+c = 4 and target variable Confident_label: 0.594234762428
+c = 0 and target variable Intelligent_label: 0.543544643948
+c = 1 and target variable Intelligent_label: 0.556003420056
+c = 2 and target variable Intelligent_label: 0.551117625504
+c = 3 and target variable Intelligent_label: 0.556003420056
+c = 4 and target variable Intelligent_label: 0.554171247099
+c = 0 and target variable Masculine_label: 0.721876145108
+c = 1 and target variable Masculine_label: 0.74728227678
+c = 2 and target variable Masculine_label: 0.746427262734
+c = 3 and target variable Masculine_label: 0.747893001099
+c = 4 and target variable Masculine_label: 0.749480884329
+c = 0 and target variable Trust_label: 0.53975815317
+c = 1 and target variable Trust_label: 0.544033223403
+c = 2 and target variable Trust_label: 0.539147428851
+c = 3 and target variable Trust_label: 0.543788933675
+c = 4 and target variable Trust_label: 0.542078905582
+c = 0 and target variable Aggressive_label: 0.563407787135
+c = 1 and target variable Aggressive_label: 0.581838154522
+c = 2 and target variable Aggressive_label: 0.585011595264
+c = 3 and target variable Aggressive_label: 0.584523373612
+c = 4 and target variable Aggressive_label: 0.582570487001
+c = 0 and target variable Attractive_label: 0.581227877456
+c = 1 and target variable Attractive_label: 0.586720371048
+c = 2 and target variable Attractive_label: 0.590870255096
+c = 3 and target variable Attractive_label: 0.589649700964
+c = 4 and target variable Attractive_label: 0.59257903088
+c = 0 and target variable Confident_label: 0.592823141706
+c = 1 and target variable Confident_label: 0.614426949835
+c = 2 and target variable Confident_label: 0.610643232027
+c = 3 and target variable Confident_label: 0.609300622483
+c = 4 and target variable Confident_label: 0.610521176614
+c = 0 and target variable Intelligent_label: 0.542536311485
+c = 1 and target variable Intelligent_label: 0.569022336141
+c = 2 and target variable Intelligent_label: 0.569510557793
+c = 3 and target variable Intelligent_label: 0.56743561577
+c = 4 and target variable Intelligent_label: 0.568656169901
+c = 0 and target variable Masculine_label: 0.715854998169
+c = 1 and target variable Masculine_label: 0.734163310143
+c = 2 and target variable Masculine_label: 0.73867936043
+c = 3 and target variable Masculine_label: 0.735750030514
+c = 4 and target variable Masculine_label: 0.737824972538
+c = 0 and target variable Trust_label: 0.540949591114
+c = 1 and target variable Trust_label: 0.549981691688
+c = 2 and target variable Trust_label: 0.555596240693
+c = 3 and target variable Trust_label: 0.552422799951
+c = 4 and target variable Trust_label: 0.554131575735
+c = 0 and target variable Aggressive_label: 0.571253972134
+c = 1 and target variable Aggressive_label: 0.584453678807
+c = 2 and target variable Aggressive_label: 0.586531410413
+c = 3 and target variable Aggressive_label: 0.588486922513
+c = 4 and target variable Aggressive_label: 0.585798093376
+c = 0 and target variable Attractive_label: 0.568320703984
+c = 1 and target variable Attractive_label: 0.578953801027
+c = 2 and target variable Attractive_label: 0.582987044732
+c = 3 and target variable Attractive_label: 0.580420435101
+c = 4 and target variable Attractive_label: 0.581031532633
+c = 0 and target variable Confident_label: 0.593986800293
+c = 1 and target variable Confident_label: 0.605353214373
+c = 2 and target variable Confident_label: 0.60999755561
+c = 3 and target variable Confident_label: 0.609386458079
+c = 4 and target variable Confident_label: 0.608775360548
+c = 0 and target variable Intelligent_label: 0.543999022244
+c = 1 and target variable Intelligent_label: 0.546443412369
+c = 2 and target variable Intelligent_label: 0.551943290149
+c = 3 and target variable Intelligent_label: 0.543021266194
+c = 4 and target variable Intelligent_label: 0.54412124175
+c = 0 and target variable Masculine_label: 0.717184062576
+c = 1 and target variable Masculine_label: 0.735516988511
+c = 2 and target variable Masculine_label: 0.738572476167
+c = 3 and target variable Masculine_label: 0.740772427279
+c = 4 and target variable Masculine_label: 0.738572476167
+c = 0 and target variable Trust_label: 0.524199462234
+c = 1 and target variable Trust_label: 0.539965778538
+c = 2 and target variable Trust_label: 0.540087998044
+c = 3 and target variable Trust_label: 0.539110241995
+c = 4 and target variable Trust_label: 0.540332437057
+RF_Score
+[[[ 0.57536074  0.5862738   0.58675882  0.58748636  0.58712259]
+  [ 0.56249242  0.57316038  0.57364529  0.57643351  0.57752455]
+  [ 0.56907292  0.57615732  0.57359228  0.57847807  0.57701234]
+  [ 0.56340779  0.58183815  0.5850116   0.58452337  0.58257049]
+  [ 0.57125397  0.58445368  0.58653141  0.58848692  0.58579809]]
+
+ [[ 0.57135928  0.58409118  0.590154    0.58578877  0.58979023]
+  [ 0.56819008  0.58334344  0.58479816  0.58625288  0.58516184]
+  [ 0.56308782  0.57566874  0.5766459   0.57505802  0.57652376]
+  [ 0.58122788  0.58672037  0.59087026  0.5896497   0.59257903]
+  [ 0.5683207   0.5789538   0.58298704  0.58042044  0.58103153]]
+
+ [[ 0.5804535   0.60167334  0.60191585  0.60106705  0.60082454]
+  [ 0.59873924  0.60807371  0.61086192  0.61049824  0.61280155]
+  [ 0.5837303   0.59655551  0.59362404  0.59472334  0.59423476]
+  [ 0.59282314  0.61442695  0.61064323  0.60930062  0.61052118]
+  [ 0.5939868   0.60535321  0.60999756  0.60938646  0.60877536]]
+
+ [[ 0.54795683  0.56202255  0.56650903  0.56359888  0.56760034]
+  [ 0.53958056  0.55485513  0.5560674   0.55812826  0.55618863]
+  [ 0.54354464  0.55600342  0.55111763  0.55600342  0.55417125]
+  [ 0.54253631  0.56902234  0.56951056  0.56743562  0.56865617]
+  [ 0.54399902  0.54644341  0.55194329  0.54302127  0.54412124]]
+
+ [[ 0.72317206  0.74196678  0.74063296  0.74220929  0.74463441]
+  [ 0.70735847  0.73136138  0.72881561  0.73245242  0.73414959]
+  [ 0.72187615  0.74728228  0.74642726  0.747893    0.74948088]
+  [ 0.715855    0.73416331  0.73867936  0.73575003  0.73782497]
+  [ 0.71718406  0.73551699  0.73857248  0.74077243  0.73857248]]
+
+ [[ 0.54553171  0.54674427  0.55244331  0.5522008   0.55135201]
+  [ 0.53327676  0.53267063  0.53279185  0.53097345  0.53060977]
+  [ 0.53975815  0.54403322  0.53914743  0.54378893  0.54207891]
+  [ 0.54094959  0.54998169  0.55559624  0.5524228   0.55413158]
+  [ 0.52419946  0.53996578  0.540088    0.53911024  0.54033244]]]
