@@ -375,15 +375,20 @@ def main():
     #RF_testScores = testScore(RF_models,test_x[columns[2:156]],test_y)
     
     #feature importance for logistic regression
-    scores = np.zeros((len(columns),len(target_labels)))
+    logit_ind_scores = np.zeros((len(columns),len(target_labels)))
     Logit_clf = LogisticRegression(C = 0.01)
     for i in range(len(target_labels)):  
         for j in range(len(columns)):
-            cols = [col for col in train_x.columns if col not in [columns[j]]]
-            Logit_clf.fit(train_x[cols],train_y[target_labels[i]].squeeze())
-            temp_score = Logit_clf.score(test_x[cols],test_y[target_labels[i]].squeeze())
+            #cols = [col for col in train_x.columns if col not in [columns[j]]]
+            Logit_clf.fit(train_x[columns[j:j+1]],train_y[target_labels[i]].squeeze())
+            temp_score = Logit_clf.score(test_x[columns[j:j+1]],test_y[target_labels[i]].squeeze())
             print "target variable " + target_labels[i] + " without " + columns[j] + ": " + str(temp_score)
-            scores[j][i] = temp_score
+            logit_ind_scores[j][i] = temp_score
+    
+    
+    np.savetxt("figures/logit_lasso_xval_score_5.12.15.csv",Logit_lasso_score_avg)
+    np.savetxt("figures/logit_scores_features_importance_5.12.15.csv",logit_scores_coef)
+    np.savetxt("figures/logit_scores_importance_5.7.15.csv",scores)
     
     #scores for logit with all features
     actual_scores = np.zeros(len(target_labels))
