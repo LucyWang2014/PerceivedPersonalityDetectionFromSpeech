@@ -253,8 +253,6 @@ def fitModels(clf, DF_train_x,DF_train_y):
 
     
 #svm
-
-
 def main():
     filepath = "Data/Master_30_4.csv"
     # there are 835 assessors, each evaluated approximately 66 recordings
@@ -454,7 +452,31 @@ def main():
         print GBC_feature_importance[[0,i+1]].tail(20)
         
     GBC_feature_importance.to_csv("figures/GBC_feature_importance.csv")
-        
+    
+    
+    lasso_opt_c = np.array([0.01,0.1,0.1,1,0.01,1])
+    
+    lasso_opt_model = []
+    lasso_feature_coef = pd.DataFrame()
+    lasso_feature_coef['features'] = columns
+    for i in lasso_opt_c:
+        lasso_opt_model.append(wrapper(LogisticRegression,C=i,penalty='l1'))
+    for i in range(len(lasso_opt_model)):
+        lasso_opt_model[i].fit(train_x,train_y[[i]].squeeze())
+        print lasso_opt_model[i]
+        lasso_feature_coef[target_labels[i]] = lasso_opt_model[i].coef_
+    
+    lasso_feature_coef.to_csv("figures/lasso_feature_coef.5.13.15.csv")
+    
+    #running on test
+    logit_opt_model = []
+    train_x,train_y,test_x,test_y = TrainTestClean(DF_train_x,DF_train_y,DF_test_x,DF_test_y)
+    logit_opt_c = np.array([0.01,0.1,0.1,1,0.01,1])  #change the parameters based on xval results
+    for i in logit_opt_c:
+        logit_opt_model.append(wrapper(LogisticRegression,C=i))
+    test_logit_scores = testScore(logit_opt_model,test_x,test_y)
+    
+    
         
     
     
