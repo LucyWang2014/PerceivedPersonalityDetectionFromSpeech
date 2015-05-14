@@ -463,8 +463,9 @@ def main():
         lasso_opt_model.append(wrapper(LogisticRegression,C=i,penalty='l1'))
     for i in range(len(lasso_opt_model)):
         lasso_opt_model[i].fit(train_x,train_y[[i]].squeeze())
-        print lasso_opt_model[i]
-        lasso_feature_coef[target_labels[i]] = lasso_opt_model[i].coef_
+    
+    for model in lasso_opt_model:
+        lasso_feature_coef[target_labels[i]] = model.coef_.ravel()
     
     lasso_feature_coef.to_csv("figures/lasso_feature_coef.5.13.15.csv")
     
@@ -476,8 +477,35 @@ def main():
         logit_opt_model.append(wrapper(LogisticRegression,C=i))
     test_logit_scores = testScore(logit_opt_model,test_x,test_y)
     
-    
+    #running GBC with optimized features
+    GBC_opt_model = []    
+    GBC_opt_est = np.array([500,200,500,500,100,500])
+    GBC_opt_score = np.zeros(6)
+    for i in GBC_opt_est:
+        GBC_opt_model.append(wrapper(GradientBoostingClassifier,n_estimators=i,learning_rate = 0.1))
+    for i in range(len(GBC_opt_model)):
+        drop_cols = lasso_feature_coef['features'].where(lasso_feature_coef[target_labels[i]] == 0)
+        opt_cols = [col for col in columns if col not in drop_cols]
+        nonzero_train_x = train_x[opt_cols]
+        nonzero_test_x = test_x[opt_cols]
         
+        GBC_opt_model[i].fit(nonzero_train_x,train_y[[i]].squeeze())
+        GBC_opt_score[i] = GBC_opt_model[i].score(nonzero_test_x,test_y[[i]].squeeze())
+    
+    SVM_func=[]
+    SVM_score = np.zeros(6)
+    for i in logit_opt_c:
+         
+        SVM_func.append(wrapper(SVC, C=i, kernel='poly', degree = 2))
+    for i in range(len(SVM_func)):
+        drop_cols = lasso_feature_coef['features'].where(lasso_feature_coef[target_labels[i]] == 0)
+        opt_cols = [col for col in columns if col not in drop_cols]
+        nonzero_train_x = train_x[opt_cols]
+        nonzero_test_x = test_x[opt_cols]
+        
+        SVM_func[i].fit(nonzero_train_x,train_y[[i]].squeeze())
+        SVM_score[i] = SVM_func[i].score(nonzero_test_x,test_y[[i]].squeeze())
+        print SVM_score[i]
     
     
     
